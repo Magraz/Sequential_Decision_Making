@@ -80,7 +80,7 @@ class Maze(abc.ABC):
                 color=colors[cidx],
                 linewidth=4,
             )
-        plt.show()
+        plt.savefig(fname="plot")
 
     def get_goal(self):
         """

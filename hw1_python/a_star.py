@@ -4,6 +4,7 @@ import os
 import numpy as np
 from copy import deepcopy
 import time
+import matplotlib
 
 dirname = os.path.dirname(__file__)
 
@@ -109,7 +110,7 @@ def A_Star(
 
             # Compute costs
             tentative_g_cost = current_node.g_cost + dist_to_neighbor
-            h = heuristic(neighbor.state, maze.goal_state, "manhattan")
+            h = heuristic(neighbor.state, maze.goal_state, "euclidean")
 
             # If neighbor is already in open_list with better g_cost, skip
             if (
@@ -211,7 +212,7 @@ def A_Star_Epsilon(
 
                 # Compute costs
                 tentative_g_cost = current_node.g_cost + dist_to_neighbor
-                h = heuristic(neighbor.state, maze.goal_state, "manhattan")
+                h = heuristic(neighbor.state, maze.goal_state, "euclidean")
 
                 # If neighbor is already in open_list with better g_cost, skip
                 if (
@@ -227,7 +228,7 @@ def A_Star_Epsilon(
                 open_list[neighbor.index] = neighbor  # Update open list
 
 
-# A_Star(maze=maze_2)
+A_Star(maze=maze_2)
 # A_Star(maze=maze_1)
 
-A_Star_Epsilon(maze=maze_2, runtime_limit=1.0)
+# A_Star_Epsilon(maze=maze_2, runtime_limit=1.0)

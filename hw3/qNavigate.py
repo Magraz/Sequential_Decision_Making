@@ -23,28 +23,26 @@ maze.load_maze(maze_filepath)
 # You can reset the maze with reset()
 maze.reset()
 
-goal = maze._get_target_location()
 
+def value_iteration(world: Maze, discount: float):
+    epochs = 1000
 
-def value_iteration():
-    epochs = 10000
+    goal = world._get_target_location()
 
-    policy = np.zeros(shape=(maze.cols, maze.rows))
-    value_table = np.zeros(shape=(maze.cols, maze.rows))
+    policy = np.zeros(shape=(world.cols, world.rows))
+    value_table = np.zeros(shape=(world.cols, world.rows))
     new_value_table = value_table[:]
 
-    # This shows how to use the step() function to move in the maze
-    print("Using step function to move...")
     for epoch in range(epochs):
 
-        for col in range(maze.cols):
-            for row in range(maze.rows):
+        for col in range(world.cols):
+            for row in range(world.rows):
                 state = (col, row)
 
-                if not maze.get_observation(state):
+                if not world.get_observation(state):
 
-                    new_value_table[col, row], best_action = value_update_rsas(
-                        maze, discount, value_table, state
+                    new_value_table[col, row], _ = value_update_rsas(
+                        world, discount, value_table, state
                     )
                     # policy[col, row] = best_action
 
@@ -52,35 +50,38 @@ def value_iteration():
 
     value_table[goal[0], goal[1]] = 1
 
-    maze.draw_maze(values=value_table)
-    input("Press Enter to continue...")
     return value_table, policy
 
 
-value_table, _ = value_iteration()
+if __name__ == "__main__":
 
-policy = extract_policy(maze, value_table)
+    value_table, _ = value_iteration(maze, discount)
 
-maze.reset()
+    policy = extract_policy(maze, value_table)
 
-reward = 0
-cur_discount = discount
+    maze.reset()
 
-# This shows how to use the step() function to move in the maze
-print("Using step function to move...")
-for _ in range(100):
-    # choose a random direction to move in
-    state = maze.position
-    move = policy[state[0], state[1]]
-    # try to move in the direction
-    maze.step(int(move))
+    reward = 0
+    cur_discount = discount
 
-    # Update the reward
-    reward += maze.get_reward() * cur_discount
+    # This shows how to use the step() function to move in the maze
+    print("Using step function to move...")
+    for _ in range(100):
+        # choose a random direction to move in
+        state = maze.position
+        move = policy[state[0], state[1]]
+        # try to move in the direction
+        maze.step(int(move))
 
-    # Update the discount factor
-    cur_discount *= discount
+        # Update the reward
+        reward += maze.get_reward() * cur_discount
 
-# Report final reward
-print("Final Reward:", reward)
-print("Reward tracked by maze class:", maze.reward_current)
+        # Update the discount factor
+        cur_discount *= discount
+
+    # Report final reward
+    print("Final Reward:", reward)
+    print("Reward tracked by maze class:", maze.reward_current)
+
+    maze.draw_maze(values=policy)
+    input("Press Enter to continue...")

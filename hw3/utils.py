@@ -46,13 +46,13 @@ def get_succ_states_and_trans(world: Maze, state, action):
         2: [noise, noise, success, noise],
         3: [noise, noise, noise, success],
     }
-    succesor_states_map = {}
+    s_states_trans_map = {}
 
     for action_idx, s_state in action_next_state_map.items():
         if s_state is not None:
-            succesor_states_map[s_state] = p[action][action_idx]
+            s_states_trans_map[s_state] = p[action][action_idx]
 
-    return succesor_states_map
+    return s_states_trans_map
 
 
 def get_succ_states(world: Maze, state):
